@@ -1,0 +1,259 @@
+
+.boon-app  {
+    //padding-top: 66px;
+     height: calc(100% - 80px);
+    max-height: calc(100% - 80px);
+    overflow: hidden;
+}
+
+.docs-container {
+    height: 100%;
+    max-height:100%;
+}
+
+.doc {
+    height: 100%;
+    max-height:100%;
+    width: 20rem;
+} 
+ 
+.docLists {
+    // height: calc(100vh - 441px);
+    // max-height: calc(100vh - 441px);
+    overflow-y:auto;
+    width: auto;
+    h5 {
+        display: inline-block;
+        font-size: 1rem;
+        margin-bottom: 0.08rem;
+        font-weight: 400;
+        width: 100%;
+        .docTitle {
+            width: 90%;
+            display: inline-block;
+        }
+    }
+    .channelLabel {
+        font-size: 0.85rem;
+        float: right;
+        padding-top: 10px;
+
+        &.remove {
+            float: right;
+            padding-top: 0;
+            height: 14px;
+            font-size: 1.1rem;
+            img {
+                display: none;
+            }
+        }
+    }
+    i {
+        color: #1F65EF;
+    }
+}
+
+.empty-state {
+    width: 100%;
+
+    .first-text {
+        font-size: 2.4rem;
+        margin-top: 15vh;
+        margin-bottom: 2vh;
+    }
+}
+
+.padded-list {
+    padding: 10px 15px;
+}
+
+
+
+.channels__empty-state {
+    margin: auto;
+    background-color: #f2f5f9;
+    color: #007bc4;
+    justify-content: center;
+    align-items: center;
+    width: 50vh;
+    height: 50vh;
+    border-radius: 50%;
+    margin-top: 2%;
+    &-img {
+        margin: 20% 15% 15% 20%;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+.card {
+    border-left: 0;
+    overflow-y: auto!important;
+    overflow-x: hidden!important;
+    
+    
+    li {
+
+        cursor: pointer;
+        
+        &:hover, &.newContent {
+           background: #f2f5f9!important;
+
+           .remove img {
+               display: inline-block;
+           }
+        }
+        &.newContent h5{
+            font-weight: 600;
+         }
+        &.selected {
+            border-left: 6px solid #1F65EF;
+        }
+
+        &.processing {
+            cursor: progress;
+        }
+    }
+}
+
+
+.fade {
+    transition: display .60s ease-out;
+
+    &-in {
+        display: block;
+    }
+
+    &-out {
+        display: none;
+    }
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+    background-color: #1F65EF;
+}
+
+::ng-deep .mat-progress-bar-buffer {
+    background: #E4E8EB;
+}
+
+::ng-deep .mat-progress-bar {
+    border-radius: 2px;
+}
+
+.custom-file {
+    width: 100%;
+    .custom-file-input {
+        cursor: pointer;
+    }
+    &-label {
+        overflow: hidden;
+        line-height: 26px;
+        font-family: "IBM Plex Sans";
+        font-size: 1.2rem;
+        font-weight: 300;
+        
+        &::after {
+            font-size: 1.1rem;
+        }
+    }
+}
+
+.list-group-item:first-child {
+    border: 0;
+}
+
+
+
+
+.row_book {
+    height: calc(100% - 80px);
+    margin-bottom: 10px;
+    max-height: 100%;
+}
+.bookView {
+    height: calc(100% - 12vh);
+    max-height: calc(100% - 12vh);
+    width: calc(100% + 20px);
+    overflow-y: scroll;
+
+    .row {
+        margin: 10px;
+        margin-bottom: 10px;
+        max-height: 100%;
+
+        
+        .card {
+            border-left: 1px solid rgba(0,0,0,.125);
+            &:hover {
+                background: #f2f5f9 !important;
+            }
+        };
+    }
+
+    .sentence-pin{
+        position:absolute;
+        top: 10px;
+        right:10px;
+        &:hover{
+            svg{
+                fill: #1F65EF;
+            }
+        }
+    }
+
+}
+
+:host {
+    teximate p {
+        margin-bottom: 0;
+    }
+}
+
+#keywordSearch {
+    padding: 15px 10px !important;
+
+    &::-webkit-input-placeholder {
+        font-size: 24px;
+    }
+}
+
+.sentenceContent {
+    word-break: break-word;
+}
+.ratings {
+    padding: 6px;
+    margin-right: 4px;
+}
+
+.sentiment {
+    min-width: 100px;
+    display: inline-block;
+}
+
+.dropdown-toggle::after {
+    //content: none;
+}
+
+select {
+    padding: 4px 8px !important;
+    font-weight: 300;
+    border: 1px solid #ced4da;
+}
+
+input[type=checkbox] {
+    border: 1px solid #ced4da;
+}
+
+.form-check-label {
+    font-weight: 300;
+}
+
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
+    color: #212529;
+    background-color: #F8F9FD;
+    border-color: #F8F9FD;
+}

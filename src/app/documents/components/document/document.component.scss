@@ -1,0 +1,231 @@
+:host {
+    width: 100%;
+}
+.doc__container {
+    width: 100%;
+    h3{
+        word-break: break-all;
+    }
+}
+
+.document-title{
+    width: 89%;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    word-break: break-all;
+}
+.container {
+    max-height: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.row_book {
+    height: calc(100vh - 333px);
+    margin-bottom: 10px;
+    max-height: 100%;
+    &.p-2 {
+        margin-bottom: 10px;
+        max-height: 100%;
+        overflow: auto;
+    }
+
+    #keywordSearch {
+        padding: 15px 10px !important;
+    }
+
+    .list-group-item:first-child {
+        border: 0;
+    }
+}
+
+.row__split {
+        margin-bottom: 10px;
+        max-height: 100%;
+        height: 100%;
+    &.p-2 {
+        margin-bottom: 10px;
+        max-height: 100%;
+        overflow: auto;
+    }
+}
+
+.viewSwitch {
+    //border: 1px solid #e2e2e2;
+    .button__icon {
+        cursor: pointer;
+        border: 0;
+
+        &:hover, &:focus, &.active {
+            border: 0;
+            outline: none;
+            background-color: #1F65EF;
+            color: #fff;
+            svg {
+                color: #fff;
+            } 
+        } 
+    }
+}
+
+
+
+.sentences__list {
+    border: 1px solid rgba(0,0,0,.125);
+    height: 100%;
+    max-height: 100%;
+    margin-bottom: 0;
+
+    &.disable {
+        display: none;
+    }
+
+    .list-group-item {
+        word-break: break-word;
+        border-top: 1px solid rgba(0, 0, 0, 0.125) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        font-size: 1.2rem;
+        //border-top: 0px !important;
+        cursor: pointer;
+        &.active {
+            color: #212529;
+            background: none;
+            border: 0;
+            border-left: 6px solid#1F65EF !important;
+        } 
+        &:first-child {
+            height: auto;
+            border: 0;
+            border-top: 0px !important;
+            &:hover {
+                background: none !important;
+            }
+        }
+        &:last-child {
+            border-bottom: 0 !important;
+        }
+        &:hover {
+            background: #f2f5f9 !important;
+        }
+    }
+}
+
+.scrollList {
+    height: calc(100vh - 340px);
+    max-height: calc(100vh - 340px);
+    overflow-y: scroll;
+}
+
+.splitView {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: stretch;
+    max-height: 100%;
+    height: 100%;
+    margin-bottom: 0;
+    overflow: hidden;
+
+    .flex-item {
+        flex-grow: 2;
+        margin-right: 20px;
+
+        &.pdf-viewer {
+            flex-grow: 2;
+            cursor:zoom-in;
+            max-width: 50%;
+            &.active {
+                max-width: 100%;
+                width: 100%;
+                zoom: 120%;
+                cursor:zoom-out;
+            }
+        }
+    }
+}
+
+.flex-container>* {
+    flex: 1 1;
+}
+.bookView {
+    height: 100%;
+    max-height: none;
+    width: auto;
+    overflow: scroll;
+
+    .row {
+        max-height: none;
+        height: auto;
+        .card {
+            border-left: 1px solid rgba(0,0,0,.125);
+            &:hover {
+                background: #f2f5f9 !important;
+            }
+        };
+    }
+
+    .sentence-pin{
+        position:absolute;
+        top: 10px;
+        right:10px;
+        &:hover{
+            svg{
+                fill: #1F65EF;
+            }
+        }
+    }
+}
+
+
+.closeBtn {
+    cursor:pointer;
+    svg {
+        height: 36px;
+        fill: #040505;
+    }
+    &:hover{
+        svg {
+            fill: #1F65EF;
+        }
+    }
+}
+
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: #1F65EF;
+}
+
+.sentenceContent {
+    word-break: break-word;
+}
+.ratings {
+    padding: 6px;
+    margin-right: 4px;
+}
+
+.sentiment {
+    min-width: 100px;
+    display: inline-block;
+}
+
+.dropdown-toggle::after {
+    content: none;
+}
+
+select {
+    padding: 4px 8px !important;
+    font-weight: 300;
+    border: 1px solid #ced4da;
+}
+
+input[type=checkbox] {
+    border: 1px solid #ced4da;
+}
+
+.form-check-label {
+    font-weight: 300;
+}
+
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
+    color: #212529;
+    background-color: #F8F9FD;
+    border-color: #F8F9FD;
+}

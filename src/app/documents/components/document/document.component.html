@@ -1,0 +1,279 @@
+<div class="container">
+
+  <div class="d-flex row pt-3 pb-2 px-4">
+    <div class="mr-auto p-2 document-title" *ngIf="document">
+      <h3 class="mb-0">{{ document.title }}</h3>
+      <span>{{ document.author }}</span>
+    </div>
+    <div class="p-2 pr-4 flex-item  text-nowrap">
+      <div class="viewSwitch">
+        <div class="closeBtn pr-2" (click)="closeDoc()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 75 75">
+            <g id="Layer_2" data-name="Layer 2">
+              <g id="Layer_1-2" data-name="Layer 1">
+                <path class="cls-1"
+                  d="M75,72.6,72.6,75,37.5,39.9,2.4,75,0,72.6,35.1,37.5,0,2.4,2.4,0,37.5,35.1,72.6,0,75,2.4,39.9,37.5Z" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="d-flex row p-2 justify-content-between">
+    <div class="flex-item align-self-start pl-4" *ngIf="toggleView == 'split'">
+      <img @tada height="50" style="padding-bottom: 15px;" src="/assets/svg/light-bulb.svg" />
+      <teximate class="pl-2 pr-2 font-weight-light d-inline-block" style="font-size: 1.5rem;"
+        [text]="'Click on a document to ZOOM IN'" [enter]="enterAnimation"> </teximate>
+    </div>
+    <div class="flex-item align-self-start pl-4" *ngIf="toggleView == 'book'">
+      <img @tada height="50" style="padding-bottom: 15px;" src="/assets/svg/magic-wand.svg" />
+      <teximate class="pl-2 pr-2 font-weight-light d-inline-block" style="font-size: 1.5rem;" [text]="nbSentenceText"
+        [enter]="enterAnimation"> </teximate>
+    </div>
+    <div class="p-2 pr-4 flex-item  text-nowrap">
+      <div class="viewSwitch">
+        <!--       <button
+        matTooltip="Switch to PDF view"
+        type="button"
+        class="button__icon p-2"
+        (click)="changeView('pdfFile')"
+        [ngClass]="{ active: toggleView == 'pdfFile' }"
+      >
+        <svg
+          width="1em"
+          height="1em"
+          viewBox="0 0 16 16"
+          class="bi bi-file-earmark-fill"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5.707A1 1 0 0 0 13.707 5L10 1.293A1 1 0 0 0 9.293 1H4zm5 1v3a1 1 0 0 0 1 1h3L9 2z"
+          />
+        </svg>
+      </button> -->
+
+        <button type="button" matTooltip="Switch to split view" class="button__icon p-2" (click)="changeView('split')"
+          [ngClass]="{ active: toggleView == 'split' }">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-layout-text-sidebar" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+            <path fill-rule="evenodd"
+              d="M11 15V1h1v14h-1zM3 3.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+          </svg>
+        </button>
+
+        <button type="button" matTooltip="Switch to book view" class="button__icon p-2" (click)="changeView('book')"
+          [ngClass]="{ active: toggleView == 'book' }">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-list" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M2.5 11.5A.5.5 0 0 1 3 11h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row__split p-2" *ngIf="toggleView == 'split'">
+    <div class="container">
+      <!--   <div  class="col-md-12" style="height: 100%" *ngIf="toggleView == 'pdfFile'">
+     <pdf-viewer (after-load-complete)="updatePage()" [show-borders]="true" [src]="document.link" [(page)]="page" [zoom-scale]="'page-width'" [zoom]="1" [render-text]="false"  style="display: block;height:100%">
+    </pdf-viewer>
+    </div> -->
+      <div class="flex-container splitView" >
+        <div class="flex-item bg-white sentences__list mt-2" [ngClass]="{'disable': pdfZoomActiv === true}">
+          <div class="list-group-item">
+            <div class="form-group clearfix mb-2">
+              <input type="text" style="width: 100%"placeholder="Search for keyword" class="form-control searchInput"
+                (input)="searchSentences($event)" />
+            </div>
+          </div>
+          <ul class="list-group list-group-flush scrollList" *ngIf="filteredSentences">
+            <li class="list-group-item p-3 pl-2" [id]="'sentence-'+sentence.id" *ngFor="let sentence of filteredSentences; let j = index"
+              [ngClass]="{'active': selectedSentence && selectedSentence.content == sentence.content}" (click)="selectSentence(j)">
+                <div class="documentTitle pb-2" > 
+                  <span class="font-weight-300" style="font-size: 1.2rem;">page
+                    {{sentence.pageNumber + 1}}</span>
+                  <small class="text-muted text-right " style="float:right">
+
+                    <ng-container *ngFor="let rating of sentence.rating | ratings">
+                      <span *ngIf="rating == 'buy'" class="ratings badge badge-success">Buy </span> 
+
+                      <span *ngIf="rating == 'hold'" class="ratings badge badge-primary">Hold </span>
+
+                      <span *ngIf="rating == 'sell'" class="ratings badge badge-danger">Sell </span>
+                      <br>
+                  </ng-container>
+
+                    <ng-container >
+                      <span class="sentiment text-danger" *ngIf="sentence.sentiment!=0 && sentence.sentiment < 0">
+                          negative sentiment
+                          <progressbar [animate]="false" [value]="sentence.sentiment | sentimentPercent" type="danger"><b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                      </span>
+      
+                      <span class="sentiment text-success" *ngIf="sentence.sentiment !=0 && sentence.sentiment > 0">
+                          positive sentiment
+                          <progressbar [animate]="false" [value]="sentence.sentiment | sentimentPercent" type="success"><b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                      </span>
+                      <span class="sentiment text-primary" *ngIf="sentence.sentiment==0">
+                          neutral sentiment
+                      </span>
+                  </ng-container>
+                 
+                  
+                  
+                </small>
+            </div>
+              <div class="pl-4">
+                {{ sentence.content}}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="flex-item pdf-viewer" style="height: 100%;" (click)="pdfZoomActiv=!pdfZoomActiv;changeZoom(zoom)"
+          [ngClass]="{'active': pdfZoomActiv === true}" *ngIf="document.link">
+          <mat-spinner style="margin: 30vh auto;" *ngIf="pdfLoading"></mat-spinner>
+          <pdf-viewer  (page-rendered)="updatePage()" [show-borders]="false" [src]="document.link" [autoresize]="true" style="max-width: 100%;"
+            [zoom-scale]="'page-fit'" [zoom]="zoom" [render-text]="false" [(page)]="page"
+            style="display: block;height:100%">
+          </pdf-viewer>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  <ng-container *ngIf="toggleView == 'book'">
+    <div class="row row_book pl-4 pr-2" *ngIf="filteredSentences">
+      <div class="list-group-item bg-grey" style="width: 100%;">
+        <div class="form-group clearfix mb-0">
+          <input type="text" style="width: 100%;"  id="keywordSearch" placeholder="Search for keyword" class="form-control searchInput"
+            (input)="searchSentences($event)">
+        </div>
+  
+      </div>
+      <div class="flex-item ml-4" style="width: 100%; ">
+        <div class="btn-group ml-2" dropdown #dropdown="bs-dropdown" [autoClose]="false">
+
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-light dropdown-toggle" aria-controls="dropdown-basic">
+                Advanced Filters <i class="fa fa-filter"></i>
+            </button>
+            <div id="dropdown-basic" *dropdownMenu class="dropdown-menu  dropdown-menu-left p-3" style="min-width: 25rem;">
+            <div class="form-group">
+                <h6>Ratings</h6>
+                <div class="form-check ml-2">
+                  <input type="checkbox" class="form-check-input" value="sell" (click)="rateEvent($event);$event.stopPropagation();" id="sellCheck">
+                  <label class="form-check-label" for="sellCheck">Sell</label>
+                </div>
+      
+                <div class="form-check ml-2">
+                  <input type="checkbox" class="form-check-input" value="hold" (click)="rateEvent($event);$event.stopPropagation(); " id="holdCheck">
+                  <label class="form-check-label" for="holdCheck">Hold</label>
+                </div>
+      
+                <div class="form-check ml-2">
+                  <input type="checkbox" class="form-check-input" value="buy" (click)="rateEvent($event);$event.stopPropagation();" id="buyCheck">
+                  <label class="form-check-label" for="buyCheck">Buy</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <h6>Country</h6>
+                <select class="form-select ml-2" aria-label="Default select example" style="width: 80%;">
+                    <option value="">Select a country</option>
+                    <ng-container  *ngFor="let c of countries">
+                        <option [value]="c">{{c}}</option>
+                    </ng-container>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <h6>Sector</h6>
+                <select class="form-select ml-2" aria-label="Default select example" style="width: 80%;">
+                    <option value="">Select a sector</option>
+                    <ng-container  *ngFor="let s of sectors">
+                        <option [value]="s">{{s}}</option>
+                    </ng-container>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <h6>Company</h6>
+                <select class="form-select ml-2" aria-label="Default select example" style="width: 80%;">
+                    <option value="">Select a company</option>
+                    <ng-container  *ngFor="let c of companies">
+                        <option [value]="c">{{c}}</option>
+                    </ng-container>
+                </select>
+              </div>
+
+              <div class="form-group mt-2">
+                <button type="button" class="btn btn-primary float-right" (click)="resetFilters()">Reset Filters</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="bookView col-12 px-0 mt-4 px-4 pt-0">
+        <div class="row" *ngFor="let sentence of filteredSentences;" (click)="goToPdf(sentence)"
+          style="cursor: pointer;">
+          <div class="col-12">
+            <div class="card grow">
+              <div class="card-body">
+
+                <div class="documentTitle pb-2" > 
+                  <span class="font-weight-600" style="font-size: 1.2rem;">from page
+                    {{sentence.pageNumber + 1}}</span>
+                  <small class="text-muted text-right " style="float:right">
+                    <ng-container *ngIf="sentence.rating == ''">
+                        <span class="sentiment text-danger" *ngIf="sentence.sentiment!=0 && sentence.sentiment < -0.55">
+                            sell sentiment
+                            <progressbar [animate]="false" [value]="sentence.sentiment | sentimentPercent" type="danger"><b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                        </span>
+                        <span class="sentiment text-primary" *ngIf="sentence.sentiment !=0 &&  (-0.55 < sentence.sentiment && sentence.sentiment < 0.55)">
+                            neutral sentiment
+                        </span>
+                        <span class="sentiment text-success" *ngIf="sentence.sentiment !=0 && sentence.sentiment > 0.55">
+                            buy sentiment
+                            <progressbar [animate]="false" [value]="sentence.sentiment | sentimentPercent" type="success"><b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                        </span>
+                        <span class="sentiment text-primary" *ngIf="sentence.sentiment==0">
+                            neutral sentiment
+                        </span>
+                    </ng-container>
+                    
+                    <ng-container *ngFor="let rating of sentence.rating | ratings">
+                        <span *ngIf="rating == 'buy'" class="ratings badge badge-success">Buy </span> 
+                        <span *ngIf="rating == 'hold'" class="ratings badge badge-primary">Hold </span>
+                        <span *ngIf="rating == 'sell'" class="ratings badge badge-danger">Sell </span>
+                    </ng-container>
+
+              
+                  
+                </small>
+                </div>
+                <div class="sentenceContent font-weight-400 pl-4">{{sentence.content}}</div>
+                <small class="text-muted text-right" style="float:right">{{document?.createdAt | date :'medium' :'+0200' | timeAgo}}</small>
+                <div class="sentence-pin" style="display: none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d" class="bi bi-pin"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A5.921 5.921 0 0 1 5 6.708V2.277a2.77 2.77 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354zm1.58 1.408l-.002-.001zm-.002-.001l.002.001A.5.5 0 0 1 6 2v5a.5.5 0 0 1-.276.447h-.002l-.012.007-.054.03a4.922 4.922 0 0 0-.827.58c-.318.278-.585.596-.725.936h7.792c-.14-.34-.407-.658-.725-.936a4.915 4.915 0 0 0-.881-.61l-.012-.006h-.002A.5.5 0 0 1 10 7V2a.5.5 0 0 1 .295-.458 1.775 1.775 0 0 0 .351-.271c.08-.08.155-.17.214-.271H5.14c.06.1.133.191.214.271a1.78 1.78 0 0 0 .37.282z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </ng-container >
+
+
+</div>

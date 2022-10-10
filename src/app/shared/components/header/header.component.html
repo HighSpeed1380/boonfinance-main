@@ -1,0 +1,86 @@
+<nav class="navbar navbar-dark bg-light justify-content-between px-4 mx-2">
+    <!-- Navbar content -->
+<a class="navbar-brand" (click)="closeDoc()" style="cursor: pointer;">
+    <img src="assets/img/logo-dark.svg" height="30" alt="">
+</a>
+
+<div class="btn-group" dropdown>
+    <button id="button-basic" dropdownToggle type="button" class="btn-lg btn-blue btn-circle"
+           >
+     {{currentUser.firstName.charAt(0).toUpperCase()}}{{currentUser.lastName.charAt(0).toUpperCase()}} <span class="caret"></span>
+    </button>
+    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right"
+        role="menu" aria-labelledby="button-basic">
+
+
+      <li role="menuitem" style="text-align:center ">
+        <span class="currentPlan" *ngIf="currentUser.plan.planId ==='the-casual' || currentUser.plan.planId ==='free-plan'" > Casual ({{currentUser.plan.status}}) </span>
+        <span class="currentPlan" *ngIf="currentUser.plan.planId ==='the-expert'" > The Expert ({{currentUser.plan.status}}) </span>
+      </li>
+      <li role="menuitem" class="text-center"><a class="currentUser dropdown-item" href="#"> {{currentUser.email}} </a></li>
+      <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation(); navigateToHelp(upgradePlan)" style="cursor: pointer;">Upgrade Plan</a></li>
+      <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation(); openModal(updatePassword)" style="cursor: pointer;">Change Passsword</a></li>
+      <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation(); navigateToHelp(helpMe)" style="cursor: pointer;">Help</a></li>
+      <li role="menuitem"><a class="dropdown-item" href="#" (click)="logout()">Log out</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<ng-template #helpMe>
+  <div class="modal-header">
+      <h4 class="modal-title ">
+           Help
+        </h4>
+        <p></p>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      For help contact us at <a href="https://boonfinance.ai/contact-us" _target="blank">Boon Finance Support</a>
+    </div>
+      <div class="modal-footer">
+        <button type="button" (click)="modalRef.hide()" class="btn btn-blue">Thank you</button>
+      </div>
+</ng-template>
+
+
+<ng-template #upgradePlan>
+  <div class="modal-header">
+      <h4 class="modal-title ">
+           Upgrade Plan
+        </h4>
+        <p></p>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      To upgrade your current plan contact us at <a href="https://boonfinance.ai/contact-us" _target="blank">Boon Finance Sales</a>
+    </div>
+      <div class="modal-footer">
+        <button type="button" (click)="modalRef.hide()" class="btn btn-blue">Thank you</button>
+      </div>
+</ng-template>
+
+
+<ng-template #updatePassword>
+  <div class="modal-header">
+      <h4 class="modal-title ">
+            Update Password
+        </h4>
+        <p></p>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      After clicking on reset password, you will receive shortly a link to reset your password.
+    </div>
+      <div class="modal-footer">
+        <button type="button" (click)="modalRef.hide()" class="btn btn-white">Cancel</button>
+          <button type="submit" (click)="changePassword()" class="btn btn-blue">Reset Password</button>
+      </div>
+
+</ng-template>

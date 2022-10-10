@@ -1,0 +1,603 @@
+<app-header (closeDocument)="onClose()"></app-header>
+
+<div class="boon-app">
+    <!-- <mat-progress-bar mode="query" *ngIf="loading || fileLoading"></mat-progress-bar> -->
+    <div class="d-flex flex-row docs-container bg-grey">
+        <div class="flex-column padded-list">
+            <div class="card doc">
+                <div class="list-group-item">
+                    <h4 class="text-left font-weight-light mt-3 mb-4">
+                        <img height="30" class="pr-2" src="/assets/svg/upload.svg" />
+                        Upload a report
+                    </h4>
+                    <!-- <div class="progress form-group" >
+                        <ngb-progressbar type="info" [value]="50" [striped]="true"></ngb-progressbar>
+                    </div> -->
+                    <div class="form-group">
+                        <div class="input-group" appDragDropFileUpload (fileDropped)="upload($event)">
+                            <span class="ddinfo">Choose a file or drag here</span>
+                            <div class="row">
+                                
+                                <div class="col-sm-11">
+                                    <input type="file" #fileFiel class="searchInput " id="myInput"
+                                        accept="application/pdf" (change)="upload($event.target)" multiple>
+                                    <!-- <label class="custom-file-label"  for="myInput">{{ fileName || 'Choose a report' }}</label> -->
+                                    <!--Multiple File Upload Module-->
+                                    <br>
+                                    <div class="image-list" *ngFor="let file of fileArr; let i = index">
+                                        <p>{{file.item.name}}</p>
+                                        <button 
+                                        style="display: inline-block;
+                                        margin-left:10px;
+                                        border:none;border-radius:50%;background-color:red;color:White;" 
+                                        (click)="removeSelectedFile(index)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1"></div>
+                                <br>
+                                <div class="col-sm-11">
+                                    <button class="btn btn-blue mt-2 mx-auto" style="width: 80%;"
+                                    [disabled]="!fileUpload" (click)="submitFile()"
+                                    type="button" placement="right">
+
+
+
+                                    <ng-container *ngIf="!fileLoading">
+
+                                        <ng-container *ngIf="canUpload">Get analyst views</ng-container>
+                                        <ng-container *ngIf="!canUpload">Upload disabled</ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="fileLoading">
+                                        <i class="fas fa-cogs"
+                                            style="position: absolute; left: 15px; bottom: 10px;"></i>
+                                        {{fileLoadingText}}
+                                    </ng-container>
+                                </button>
+                                </div>
+
+                                <!--Multiple File Upload Module-->
+                            </div>
+                           
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-2" style="display: block; max-height: 100%; height: 100%;">
+                    <div class="list-group-item">
+                        <h4 class="text-left font-weight-light mt-3 mb-4">
+                            <img height="30" class="pr-2" src="/assets/svg/documents.svg" />
+                            Library
+                        </h4>
+                        <div class="form-group clearfix mb-2">
+                            <input type="text" style="width: 100%;" placeholder="Search document"
+                                (input)="searchDocs($event)" class="searchInput form-control">
+                        </div>
+                    </div>
+
+                    <div class="list">
+                        <p *ngIf="!documents" class="p-4" style="font-weight: 300; font-size: 1.3rem;">
+                            Your library is empty.
+                        </p>
+                        <ul class="list-group list-group-flush docLists">
+                            <ng-container *ngFor="let doc of filteredDocs">
+                                <li class="list-group-item"
+                                    [ngClass]="{'selected': selectedClass == doc.id, 'newContent': newDocuments && newDocuments.includes(doc.id), 'processing': doc.processed === false}">
+                                    <div class="float-left" style="width: 100%;"
+                                        (click)="doc.processed === true && selectDocument(doc.id)">
+                                        <h5 class="channelKey">
+                                            <span class="docTitle">
+                                                {{doc.title}}
+                                            </span>
+                                            <div class="remove channelLabel" *ngIf="doc.processed === true">
+                                                <img src="assets/svg/delete-cross.svg"
+                                                    (click)="$event.stopPropagation(); removeDocModal(doc, deleteDocument)"
+                                                    height="14px" />
+                                            </div>
+                                            <div *ngIf="!doc.processed" class="remove channelLabel">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </h5>
+                                        <span style="width: 100%; ">
+                                            <ng-container *ngIf="doc.processed === true">
+                                                <span *ngFor="let company of doc.companies"
+                                                    style="color:#1E50BC;font-size: 0.75rem;margin-top: 4px;">
+                                                    #{{company.quoteBloomberg | formatCompany}}
+                                                </span>
+                                            </ng-container>
+
+                                        </span>
+                                        <span class="channelLabel text-muted"> {{doc.createdAt | date :'medium'
+                                            :'+0200'| timeAgo}}</span>
+
+                                    </div>
+
+                                </li>
+                            </ng-container>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div *ngIf="loadSentence" class="loader empty-state  flex-column justify-content-center">
+            <div class="text-center" style="margin-top: 40vh;">
+                <img height="100px" src="assets/svg/loader.gif" />
+            </div>
+        </div>
+
+        <div *ngIf="!sentences && !loadSentence" [ngClass]="{'fade-out': selectedClass}"
+            class="empty-state flex-column justify-content-center">
+
+            <div class="text-center">
+
+                <div class="first-text">
+                    <img @zoomInLeft height="80" style="padding-bottom: 15px;" src="/assets/svg/magic-wand.svg" />
+                    <teximate class="pl-4 font-weight-light d-inline-block"
+                        [text]="'What should our machines read for you today ?'" [enter]="enterAnimation"> </teximate>
+                </div>
+
+                <div class="channels__empty-state">
+                    <div class="channels__empty-state-img">
+                        <svg width="100%" height="100%" viewBox="0 0 517 489" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="179.258" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="213.747" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="248.236" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="282.725" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="317.214" cy="6.814" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="179.258" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="213.747" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="248.236" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="282.725" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="317.214" cy="41.736" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="76.658" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="76.658" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="76.658" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="76.658" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="76.658" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="111.58" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="111.58" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="111.58" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="111.58" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="111.58" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="146.502" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="146.502" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="146.502" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="146.502" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="181.424" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="181.424" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="181.424" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="181.424" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="181.424" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="216.346" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="216.346" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="216.346" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="216.346" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="251.268" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="251.268" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="251.268" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="251.268" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="251.268" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="286.19" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="286.19" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="286.19" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="286.19" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="286.19" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="6.813" cy="321.112" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="321.112" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="321.112" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="321.112" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="144.769" cy="321.112" r="6.813" style="fill:rgb(204,204,204);"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="110.28" cy="41.736" r="6.813" fill="#1F65EF"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="41.302" cy="146.502" r="6.813" fill="#1F65EF"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="75.791" cy="216.346" r="6.813" fill="#1F65EF"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M609.209,193.831C613.935,193.83 617.823,197.719 617.823,202.444L617.823,547.004C617.823,551.729 613.935,555.618 609.209,555.618L361.988,555.618C357.262,555.618 353.374,551.729 353.374,547.004L353.374,202.444C353.374,197.719 357.262,193.83 361.988,193.83L609.209,193.83"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <rect x="362.991" y="203.447" width="245.216" height="342.554"
+                                    style="fill:white;fill-rule:nonzero;"></rect>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,257.643C554.594,257.643 555.372,258.421 555.372,259.366L555.372,262.811C555.372,263.756 554.594,264.534 553.649,264.534L417.548,264.534C416.603,264.534 415.825,263.756 415.825,262.811L415.825,259.366C415.825,258.421 416.603,257.643 417.548,257.643L553.649,257.643"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,274.009C554.594,274.009 555.372,274.787 555.372,275.732L555.372,279.178C555.372,280.123 554.594,280.901 553.649,280.901L417.548,280.901C416.603,280.901 415.825,280.123 415.825,279.178L415.825,275.732C415.825,274.787 416.603,274.009 417.548,274.009L553.649,274.009"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,290.376C554.594,290.376 555.372,291.154 555.372,292.099L555.372,295.544C555.372,296.489 554.594,297.267 553.649,297.267L417.548,297.267C416.603,297.267 415.825,296.489 415.825,295.544L415.825,292.099C415.825,291.154 416.603,290.376 417.548,290.376L553.649,290.376"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,307.101C554.594,307.101 555.372,307.878 555.372,308.824L555.372,312.269C555.372,313.214 554.594,313.992 553.649,313.992L417.548,313.992C416.603,313.992 415.825,313.214 415.825,312.269L415.825,308.824C415.825,307.878 416.603,307.101 417.548,307.101L553.649,307.101"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,323.467C554.594,323.467 555.372,324.245 555.372,325.19L555.372,328.636C555.372,329.581 554.594,330.358 553.649,330.358L417.548,330.358C416.603,330.358 415.825,329.581 415.825,328.636L415.825,325.19C415.825,324.245 416.603,323.467 417.548,323.467L553.649,323.467"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M553.649,339.834C554.594,339.834 555.372,340.612 555.372,341.557L555.372,345.002C555.372,345.947 554.594,346.725 553.649,346.725L417.548,346.725C416.603,346.725 415.825,345.947 415.825,345.002L415.825,341.557C415.825,340.612 416.603,339.834 417.548,339.834L553.649,339.834"
+                                    style="fill:rgb(204,204,204);fill-rule:nonzero;"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-208.417,-131.5)">
+                                <path
+                                    d="M418.417,394.89C417.32,394.891 416.418,395.793 416.417,396.89L416.417,489.806C416.418,490.902 417.321,491.804 418.417,491.806L552.548,491.806C553.645,491.804 554.547,490.902 554.548,489.806L554.548,396.89C554.547,395.793 553.645,394.891 552.548,394.89L418.417,394.89Z"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <path
+                                    d="M277.241,161.182L275.833,160.808L306.56,45.221L484.785,45.221L484.785,46.678L307.679,46.678L277.241,161.182Z"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M708.153,194.179C708.153,194.179 708.153,194.179 708.153,194.179C699.764,194.179 692.862,187.277 692.862,178.888C692.862,170.5 699.764,163.597 708.153,163.597C716.541,163.597 723.443,170.5 723.443,178.888C723.434,187.273 716.537,194.17 708.153,194.179ZM708.153,165.054C708.153,165.054 708.153,165.054 708.153,165.054C700.563,165.054 694.318,171.299 694.318,178.888C694.318,186.478 700.563,192.723 708.153,192.723C715.742,192.723 721.987,186.478 721.987,178.888C721.979,171.302 715.739,165.062 708.153,165.054Z"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="499.348" cy="45.95" r="5.825" fill="#1F65EF"></circle>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <path
+                                    d="M272.477,356.941L273.884,357.317L242.937,472.845L64.712,472.504L64.715,471.047L241.82,471.387L272.477,356.941Z"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,-207.805,-131.5)">
+                                <path
+                                    d="M258.985,589.395C267.362,589.411 274.246,596.309 274.246,604.686C274.246,613.075 267.344,619.977 258.955,619.977C250.567,619.977 243.664,613.075 243.664,604.686C243.664,604.677 243.664,604.667 243.664,604.657C243.69,596.272 250.6,589.389 258.985,589.395ZM258.929,618.521C258.938,618.521 258.947,618.521 258.955,618.521C266.545,618.521 272.79,612.276 272.79,604.686C272.79,597.097 266.545,590.852 258.955,590.852C251.376,590.852 245.135,597.08 245.121,604.66C245.115,612.246 251.343,618.498 258.929,618.521Z"
+                                    fill="#1F65EF"></path>
+                            </g>
+                            <g transform="matrix(1,0,0,1,1,1.43874)">
+                                <circle cx="50.15" cy="471.748" r="5.825" fill="#1F65EF"></circle>
+                            </g>
+                        </svg>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="container bg-grey" *ngIf="!selectedDoc && sentences && !loadSentence">
+            <div class="row pl-4 pr-2 pt-4">
+                <h2 class="mt-4 mb-4" *ngIf="nbSentenceText">
+                    <img @zoomInLeft height="55" style="padding-bottom: 15px;" src="/assets/svg/magic-wand.svg" />
+                    <teximate class="pl-4 font-weight-light d-inline-block" [text]="nbSentenceText"
+                        [enter]="enterAnimation"> </teximate>
+                </h2>
+            </div>
+            <div class="row row_book pl-4 pr-2" *ngIf="filteredSentences">
+                <div class="list-group-item bg-grey" style="width: 100%;">
+                    <div class="form-group clearfix mb-0">
+                        <input type="text" id="keywordSearch" style="width: 100%;"
+                            placeholder="Search for keyword, EX: AMZN" class="searchInput form-control"
+                            (input)="searchSentences($event)">
+                    </div>
+
+                </div>
+                <div class="flex-item ml-4" style="width: 100%; ">
+                    <div class="btn-group ml-2" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+
+                        <span style="cursor: pointer; color: black;" dropdownToggle type="button"
+                            class="dropdown-toggle text-right float-right" aria-controls="dropdown-basic">
+                            Advanced Filters
+                        </span>
+                        <div id="dropdown-basic" *dropdownMenu class="dropdown-menu  dropdown-menu-left p-3"
+                            style="min-width: 25rem;">
+                            <form [formGroup]="filtersForm" (click)="$event.stopPropagation();">
+
+                                <div class="form-group">
+
+                                    <h6>Ratings</h6>
+                                    <div class="form-check ml-2">
+                                        <input class="form-control" formControlName="sell" type="checkbox"
+                                            class="form-check-input" id="sellCheck">
+                                        <label class="form-check-label" for="sellCheck">Sell</label>
+                                    </div>
+
+                                    <div class="form-check ml-2">
+                                        <input class="form-control" formControlName="hold" type="checkbox"
+                                            class="form-check-input" id="holdCheck">
+                                        <label class="form-check-label" for="holdCheck">Hold</label>
+                                    </div>
+
+                                    <div class="form-check ml-2">
+                                        <input class="form-control" formControlName="buy" type="checkbox"
+                                            class="form-check-input" id="buyCheck">
+                                        <label class="form-check-label" for="buyCheck">Buy
+                                            {{filtersForm.value.buy}}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" (click)="$event.stopPropagation();">
+                                    <h6>Country</h6>
+                                    <select class="form-control" formControlName="country" class="form-select ml-2"
+                                        aria-label="Default select example" style="width: 80%;"
+                                        (change)="countryEvent($event);$event.stopPropagation();">
+                                        <option [value]=null>Select a country</option>
+                                        <ng-container *ngFor="let c of countries">
+                                            <option [value]="c">{{c}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" (click)="$event.stopPropagation();">
+                                    <h6>Sector</h6>
+                                    <select class="form-control" formControlName="sector" class="form-select ml-2"
+                                        aria-label="Default select example" style="width: 80%;"
+                                        (change)="sectorEvent($event); $event.stopPropagation();">
+                                        <option [value]=null>Select a sector</option>
+                                        <ng-container *ngFor="let s of sectors">
+                                            <option [value]="s">{{s}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <h6>Company</h6>
+                                    <select class="form-control" formControlName="company" class="form-select ml-2"
+                                        aria-label="Default select example" style="width: 80%;"
+                                        (click)="$event.stopPropagation();">
+                                        <option [value]=null>Select a company</option>
+                                        <ng-container *ngFor="let c of companies">
+                                            <option [value]="c">{{c}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <button type="button" class="btn btn-primary float-right"
+                                        (click)="resetFilters()">Reset Filters</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="bookView col-12 px-0 mt-2 p-4">
+                    <div class="row" style="cursor: pointer;" *ngFor="let sentence of filteredSentences"
+                        (click)="selectDocument(sentence.documentId, sentence.pageNumber + 1, sentence)">
+                        <div class="col-12">
+                            <span class="text-muted text-right pr-2" style="width: 100%;display: none"><i
+                                    class="far fa-eye-slash"></i> hide from list</span>
+                            <div class="card grow">
+                                <div class="card-body">
+                                    <div class="documentTitle pb-2">
+                                        <span class="font-weight-300" style="font-size: 1.2rem;">from
+                                            {{sentence.document?.title}} (page {{sentence.pageNumber + 1}})</span>
+                                        <small class="text-muted text-right " style="float:right">
+
+                                            <ng-container *ngIf="sentence.rating">
+                                                <ng-container *ngFor="let rating of sentence.rating | ratings">
+                                                    <span *ngIf="rating == 'buy'"
+                                                        class="ratings badge badge-success">Buy </span>
+
+                                                    <span *ngIf="rating == 'hold'"
+                                                        class="ratings badge badge-primary">Hold </span>
+
+                                                    <span *ngIf="rating == 'sell'"
+                                                        class="ratings badge badge-danger">Sell </span>
+                                                </ng-container>
+                                                <br>
+                                            </ng-container>
+                                            <ng-container>
+                                                <span class="sentiment text-danger"
+                                                    *ngIf="sentence.sentiment!=0 && sentence.sentiment < 0">
+                                                    negative sentiment
+                                                    <progressbar [animate]="false"
+                                                        [value]="sentence.sentiment | sentimentPercent" type="danger">
+                                                        <b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                                                </span>
+
+                                                <span class="sentiment text-success"
+                                                    *ngIf="sentence.sentiment !=0 && sentence.sentiment > 0">
+                                                    positive sentiment
+                                                    <progressbar [animate]="false"
+                                                        [value]="sentence.sentiment | sentimentPercent" type="success">
+                                                        <b>~{{sentence.sentiment | sentimentPercent}}%</b></progressbar>
+                                                </span>
+                                                <span class="sentiment text-primary" *ngIf="sentence.sentiment==0">
+                                                    neutral sentiment
+                                                </span>
+                                            </ng-container>
+
+                                        </small>
+                                    </div>
+
+                                    <div class="sentenceContent font-weight-400 pl-4">{{sentence.content}}</div>
+                                    <small class="text-muted text-right" style="float:right">discovered
+                                        {{sentence.document?.createdAt | date :'medium' :'+0200' | timeAgo}}</small>
+                                    <div class="sentence-pin" style="display: none;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d"
+                                            class="bi bi-pin" viewBox="0 0 16 16">
+                                            <path
+                                                d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A5.921 5.921 0 0 1 5 6.708V2.277a2.77 2.77 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354zm1.58 1.408l-.002-.001zm-.002-.001l.002.001A.5.5 0 0 1 6 2v5a.5.5 0 0 1-.276.447h-.002l-.012.007-.054.03a4.922 4.922 0 0 0-.827.58c-.318.278-.585.596-.725.936h7.792c-.14-.34-.407-.658-.725-.936a4.915 4.915 0 0 0-.881-.61l-.012-.006h-.002A.5.5 0 0 1 10 7V2a.5.5 0 0 1 .295-.458 1.775 1.775 0 0 0 .351-.271c.08-.08.155-.17.214-.271H5.14c.06.1.133.191.214.271a1.78 1.78 0 0 0 .37.282z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-document style="overflow: hidden;" [pageNumber]="pageNumber" (closeDocument)="onClose()"
+            [sentence]="selectedSentence" [document]="selectedDoc" *ngIf="selectedDoc && !loading"></app-document>
+
+
+    </div>
+</div>
+
+
+
+<ng-template #deleteDocument>
+    <div class="modal-header">
+        <h4 class="modal-title ">
+            delete document
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete {{docToRemove.title}} ?
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" (click)="deleteFile(docToRemove)" class="btn btn-blue">Delete</button>
+        <button type="button" (click)="modalRef.hide()" class="btn btn-black">Close</button>
+    </div>
+
+</ng-template>
+
+
+<ng-template #successTemplate style="display: none;">
+    Your document is being processed
+</ng-template>
+<ng-template #errorTemplate style="display: none;">
+    Something went wrong.
+</ng-template>

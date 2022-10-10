@@ -1,0 +1,266 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+@import 'fonts';
+
+@import '~ngx-toastr/toastr';
+
+html {
+    scroll-behavior: smooth;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    font-family: "Lato" !important;
+}
+
+@media (min-width: 1680px) {
+    .container {
+        max-width: 1620px;
+    }
+}
+    
+.main {
+    padding: 16px 16px;
+}
+
+.boonfinance-app  {
+    background-color: #111111;
+    height: 100%;
+}
+
+h3, h4 {
+    font-weight: 600;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: "Lato", "Helvetica Neue", sans-serif; }
+
+
+.bg-dark {
+    background-color: #222831!important;
+}
+
+:root {
+    --primary-color: #1E50BC;
+    --secondary-color: #1a8fe3;
+}
+
+.btn {
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+    font-weight: 600;
+    border-radius: 21px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &-blue {
+        color: #fff;
+        //background-color: #1F65EF;
+        background-image: linear-gradient(45deg, var(--secondary-color) , var(--primary-color));
+        // border-color: #1F65EF;
+
+        &:hover {
+            text-decoration: none;
+            filter: brightness(120%);
+        }
+    }
+    &-white {
+        color: #040505;
+        background-color: #fff;
+        border-color: #fff;
+    }
+
+    &:hover {
+        text-decoration: none;
+        filter: brightness(120%);
+    }
+}
+
+
+
+.modal-content {
+    .modal-title {
+        text-align: center;
+        width: 100%;
+    }
+    .modal-body {
+        padding-right: 1.5rem!important;
+        padding-left: 1.5rem!important;
+    }
+}
+
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 600;
+    text-align: center;
+  }
+  .btn-circle.btn-lg {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 0.6;
+    border-radius: 25px;
+    border: 0;
+
+    &:focus, &:hover {
+        border: 0px !important;
+        outline: none;
+        filter: brightness(120%);
+    }
+  }
+
+  .dropdown:hover>.dropdown-menu {
+    display: block;
+  }
+
+  .btn-link {
+    color: #1F65EF;
+}
+
+  .panel {
+    .card {
+        border: 0;
+    }
+    .card-header {
+        background-color: #fff;
+    }  
+     &-open {
+        .card-header {
+            background-color: rgba(0,0,0,.03) !important;
+        } 
+        .btn-link:before {
+            text-decoration: none;
+            content: '-' !important;
+        }
+    }
+
+    &:hover, &:focus {
+        .card-header {
+            background-color: rgba(0,0,0,.03) !important;
+        } 
+    }
+
+    .btn-link {
+        text-decoration: none;
+        width: 100%;
+        text-align: left;
+        padding: 0px 0 0 0 !important;
+        &:before {
+            content: '+';
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            padding-right: 18px;
+        }
+    }
+    .panel-body {
+        overflow-y: scroll;
+        padding: 0;
+        height: 100%;
+    }
+  }
+   
+  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link {
+    color: #1F65EF;
+}
+  .nav-link.active {
+    color: #232839;
+}
+
+
+.nav-tabs {
+    li {
+        &:first-child {
+            width: 100%;
+            text-align: center;
+        }
+    }
+}
+.bg-grey {
+    background-color: #EAECF0 !important;
+}
+
+.bg-white {
+    background-color: #fff !important;
+}
+
+.font-weight-600{
+  font-weight:600;
+}
+
+.font-weight-300{
+    font-weight:300;
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.searchInput::-webkit-input-placeholder {
+    color: #040505;
+    font-weight: 200;
+    font-family: 'IBM Plex Sans';
+    font-size: 18px;
+}
+
+
+.sentenceContent {
+    font-size: 1.4rem;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+
+/*Multiple File Upload Module*/
+.fileupload {
+    // background: url('../assets/upload-icon.png');
+    // background-repeat: no-repeat;
+    // background-size: 100px;
+    // background-position: center;
+    background-color: #ffffff;
+    height: 200px;
+    width: 100%;
+    cursor: pointer;
+    /* border: 2px dashed #0f68ff; */
+    border-radius: 6px;
+    margin-bottom: 25px;
+    background-position: center 28px;
+}
+
+.ddinfo {
+    display: block;
+    text-align: center;
+    padding-top: 10px;
+    color: #a0a1a2;
+}
+
+.image-list {
+    margin-top:10px;
+    background: #C2DFFC;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 10px 10px 10px 15px;
+    margin-bottom: 10px;
+    width:80%;
+}
+
+.image-list p {
+    line-height: normal;
+    margin: 0 0 0 14px;
+    display: inline-block;
+    position: relative;
+    
+    color: #150938;
+    font-size: 14px;
+}
